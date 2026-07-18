@@ -3,6 +3,7 @@ import '../widgets/custom_button.dart';
 import '../constants/app_colors.dart';
 import 'login_screen.dart';
 import 'signup_screen.dart';
+import 'program_details_screen.dart';
 
 class LandingScreen extends StatelessWidget {
   const LandingScreen({super.key});
@@ -60,7 +61,7 @@ class LandingScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const LoginScreen(),
+                        builder: (context) => const ProgramDetailsScreen(),
                       ),
                     );
                   },
