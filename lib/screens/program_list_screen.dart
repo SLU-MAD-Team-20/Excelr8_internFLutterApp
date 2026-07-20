@@ -77,7 +77,7 @@ class ProgramListScreen extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => ProgramDetailScreen(program: program),
+                                    builder: (context) => const ProgramDetailsScreen(),
                                   ),
                                 );
                               },
