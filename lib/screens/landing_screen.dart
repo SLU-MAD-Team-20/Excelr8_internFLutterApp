@@ -16,19 +16,12 @@ class LandingScreen extends StatelessWidget {
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 24,
-              vertical: 20,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-
                 // Logo
-                Image.asset(
-                  'assets/images/excelerate_logo.png',
-                  height: 90,
-                ),
+                Image.asset('assets/images/excelerate_logo.png', height: 90),
 
                 const SizedBox(height: 40),
 
@@ -61,7 +54,7 @@ class LandingScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const ProgramDetailsScreen(),
+                        builder: (context) => const LoginScreen(),
                       ),
                     );
                   },

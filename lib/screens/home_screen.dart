@@ -5,6 +5,7 @@ import '../widgets/success_card.dart';
 import '../widgets/internship_card.dart';
 import '../widgets/announcement_card.dart';
 import '../constants/text_styles.dart';
+import 'program_list_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -138,6 +139,16 @@ class HomeScreen extends StatelessWidget {
 
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: 0,
+        onTap: (index) {
+          if (index == 1) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const ProgramListScreen(),
+              ),
+            );
+          }
+        },
 
         items: const [
 

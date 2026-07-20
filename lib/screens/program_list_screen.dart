@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../models/program.dart';
-import 'program_detail_screen.dart'; // import teammate's/your detail screen
+import 'models/program.dart';
+import 'program_details_screen.dart'; // import teammate's/your detail screen
 
 class ProgramListScreen extends StatelessWidget {
-  const ProgramListScreen({Super.key});
+  const ProgramListScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +11,10 @@ class ProgramListScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Program Management'),
         actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.notifications_none)),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.notifications_none),
+          ),
         ],
       ),
       body: SingleChildScrollView(
@@ -62,13 +65,18 @@ class ProgramListScreen extends StatelessWidget {
                       children: [
                         ListTile(
                           contentPadding: EdgeInsets.zero,
-                          title: Text(program.title, style: const TextStyle(fontWeight: FontWeight.bold)),
-                          subtitle: Text('${program.registeredCount} registered'),
+                          title: Text(
+                            program.title,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          subtitle: Text(
+                            '${program.registeredCount} registered',
+                          ),
                           trailing: Chip(label: Text(program.status)),
                         ),
                         LinearProgressIndicator(value: program.progress),
                         const SizedBox(height: 12),
-                        
+
                         // 4. NAVIGATION ACTION (TO PROGRAM DETAILS)
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
@@ -78,7 +86,8 @@ class ProgramListScreen extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => ProgramDetailScreen(program: program),
+                                    builder: (context) =>
+                                        ProgramDetailsScreen(),
                                   ),
                                 );
                               },
@@ -107,7 +116,10 @@ class ProgramListScreen extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Text(value, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          Text(
+            value,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
           Text(title, style: const TextStyle(fontSize: 12)),
         ],
       ),
