@@ -1,7 +1,7 @@
 class Program {
   final String id;
   final String title;
-  final String status; // 'Active', 'Draft', 'Closed'
+  final String status; // e.g. 'ACTIVE', 'DRAFT', 'CLOSED'
   final int registeredCount;
   final double progress; // e.g., 0.65 for 65%
 
