@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'screens/landing_screen.dart';
+import 'screens/home_screen.dart';
 
 void main() {
   runApp(const ExcelerateApp());
@@ -10,10 +10,9 @@ class ExcelerateApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Excelerate',
-      home: const LandingScreen(),
+      home: HomeScreen(),
     );
   }
 }
