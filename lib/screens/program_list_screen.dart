@@ -24,9 +24,8 @@ class ProgramListScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 _buildMetricCard('Total Programs', '${dummyPrograms.length}'),
-                _buildMetricCard('Active', '2'),
-                _buildMetricCard('Draft', '1'),
-              ],
+                _buildMetricCard('Active', '${dummyPrograms.where((p) => p.status == "ACTIVE").length}'),
+                _buildMetricCard('Draft', '${dummyPrograms.where((p) => p.status == "DRAFT").length}'),
             ),
             const SizedBox(height: 16),
 
