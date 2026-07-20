@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../models/program.dart';
-import 'program_detail_screen.dart'; // import teammate's/your detail screen
+import 'models/program.dart';
+import 'program_details_screen.dart'; // existing details screen
 
 class ProgramListScreen extends StatelessWidget {
   const ProgramListScreen({Super.key});
