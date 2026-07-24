@@ -135,7 +135,7 @@ class _ProgramListScreenState extends State<ProgramListScreen> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) =>
-                                           builder: (context) => ProgramDetailsScreen(program: program),
+                                            const ProgramDetailsScreen(),
                                       ),
                                     );
                                   },
