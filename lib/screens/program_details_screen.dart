@@ -15,7 +15,6 @@ class ProgramDetailsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             Container(
               height: 200,
               width: double.infinity,
@@ -23,45 +22,29 @@ class ProgramDetailsScreen extends StatelessWidget {
                 color: Colors.blue.shade100,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Icon(
-                Icons.school,
-                size: 100,
-                color: Colors.blue,
-              ),
+              child: const Icon(Icons.school, size: 100, color: Colors.blue),
             ),
 
             SizedBox(height: 20),
 
             Text(
               "Flutter Development Program",
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
 
             SizedBox(height: 10),
 
-            Text(
-              "Duration: 8 Weeks",
-              style: TextStyle(fontSize: 18),
-            ),
+            Text("Duration: 8 Weeks", style: TextStyle(fontSize: 18)),
 
             SizedBox(height: 10),
 
-            Text(
-              "Start Date: August 2026",
-              style: TextStyle(fontSize: 18),
-            ),
+            Text("Start Date: August 2026", style: TextStyle(fontSize: 18)),
 
             SizedBox(height: 20),
 
             Text(
               "Description",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
 
             SizedBox(height: 10),
