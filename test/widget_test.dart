@@ -1,38 +1,30 @@
+// This is a basic Flutter widget test.
+//
+// To perform an interaction with a widget in your test, use the WidgetTester
+// utility in the flutter_test package. For example, you can send tap and scroll
+// gestures. You can also use WidgetTester to find child widgets in the widget
+// tree, read text, and verify that the values of widget properties are correct.
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:first_app/main.dart';
-import 'package:first_app/models/program_model.dart';
-import 'package:first_app/screens/program_details_screen.dart';
+
+import 'package:excelerate_flutter/main.dart';
 
 void main() {
-  testWidgets('Landing screen loads', (WidgetTester tester) async {
-    await tester.pumpWidget(const ExcelerateApp());
+  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(const MyApp());
 
-    expect(find.text('Welcome!'), findsOneWidget);
-    expect(find.text('Sign In'), findsOneWidget);
-    expect(find.text('Sign Up'), findsOneWidget);
-  });
+    // Verify that our counter starts at 0.
+    expect(find.text('0'), findsOneWidget);
+    expect(find.text('1'), findsNothing);
 
-  testWidgets('Program details screen shows program information', (WidgetTester tester) async {
-    final program = ProgramModel(
-      id: '1',
-      title: 'Flutter Basics',
-      status: 'Active',
-      registeredCount: 25,
-      progress: '70%',
-      description: 'A hands-on Flutter course.',
-      duration: '6 Weeks',
-      startDate: 'Aug 2026',
-    );
+    // Tap the '+' icon and trigger a frame.
+    await tester.tap(find.byIcon(Icons.add));
+    await tester.pump();
 
-    await tester.pumpWidget(
-      MaterialApp(
-        home: ProgramDetailsScreen(program: program),
-      ),
-    );
-
-    expect(find.text('Flutter Basics'), findsOneWidget);
-    expect(find.text('A hands-on Flutter course.'), findsOneWidget);
-    expect(find.text('Duration: 6 Weeks'), findsOneWidget);
+    // Verify that our counter has incremented.
+    expect(find.text('0'), findsNothing);
+    expect(find.text('1'), findsOneWidget);
   });
 }

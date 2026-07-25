@@ -1,0 +1,28 @@
+{
+  "success": [
+    {
+      "value": "$0",
+      "title": "My Scholarships"
+    },
+    {
+      "value": "0",
+      "title": "My Skills"
+    },
+    {
+      "value": "0",
+      "title": "My Badges"
+    },
+    {
+      "value": "0",
+      "title": "Experiences"
+    }
+  ],
+  "internship": {
+    "title": "Flutter Development",
+    "description": "Description\n--------------------"
+  },
+  "announcement": {
+    "title": "New Flutter module released",
+    "subtitle": "Internship applications now open"
+  }
+}
