@@ -13,7 +13,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<Program> _programs = [];
+  HomeData? _homeData;
   bool _isLoading = true;
   String? _errorMessage;
 
@@ -40,9 +40,9 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     try {
-      final programs = await ApiService.getPrograms();
+      final data = await ApiService.getHomeData();
       setState(() {
-        _programs = programs;
+        _homeData = data;
         _isLoading = false;
       });
     } catch (e) {
@@ -122,85 +122,67 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildProgramCard(Program program) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _buildSuccessGrid(List<SuccessItem> items) {
+    return Column(
+      children: [
+        Row(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Text(
-                    program.title,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.blue.shade50,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    program.status,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.blue.shade700,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _buildStatItem(
-                  Icons.people,
-                  '${program.registeredCount} Registered',
-                ),
-                _buildStatItem(
-                  Icons.trending_up,
-                  '${program.progress}%',
-                ),
-              ],
-            ),
+            Expanded(child: SuccessCard(value: items[0].value, title: items[0].title)),
+            const SizedBox(width: 12),
+            Expanded(child: SuccessCard(value: items[1].value, title: items[1].title)),
           ],
         ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Expanded(child: SuccessCard(value: items[2].value, title: items[2].title)),
+            const SizedBox(width: 12),
+            Expanded(child: SuccessCard(value: items[3].value, title: items[3].title)),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildInternshipCard(InternshipData data) {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      child: ListTile(
+        contentPadding: const EdgeInsets.all(12),
+        leading: Container(
+          width: 55,
+          height: 55,
+          decoration: BoxDecoration(
+            color: Colors.grey.shade300,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: const Icon(Icons.code),
+        ),
+        title: Text(data.title, style: const TextStyle(fontWeight: FontWeight.w600)),
+        subtitle: Text(data.description),
+        trailing: const Icon(Icons.chevron_right),
       ),
     );
   }
 
-  Widget _buildStatItem(IconData icon, String text) {
-    return Row(
-      children: [
-        Icon(icon, size: 16, color: Colors.grey),
-        const SizedBox(width: 4),
-        Text(
-          text,
-          style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
-        ),
-      ],
+  Widget _buildAnnouncementCard(AnnouncementData data) {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      child: ListTile(
+        contentPadding: const EdgeInsets.all(12),
+        leading: const Icon(Icons.notifications, color: Colors.blue),
+        title: Text(data.title),
+        subtitle: Text(data.subtitle),
+      ),
     );
   }
 
   Widget _buildFeedbackForm() {
     return Card(
       elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(14),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Form(
@@ -208,10 +190,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                "Feedback",
-                style: AppTextStyles.sectionTitle,
-              ),
+              const Text("Feedback", style: AppTextStyles.sectionTitle),
               const SizedBox(height: 16),
               TextFormField(
                 controller: _feedbackController,
@@ -241,10 +220,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ? const SizedBox(
                           height: 20,
                           width: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: Colors.white,
-                          ),
+                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                         )
                       : const Text('Submit'),
                 ),
@@ -276,35 +252,33 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: 0,
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: "Home",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.school),
-            label: "Programs",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: "Profile",
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+          BottomNavigationBarItem(icon: Icon(Icons.school), label: "Programs"),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
         ],
       ),
     );
   }
 
   Widget _buildContent() {
+    final data = _homeData!;
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildSectionHeader("Programs"),
+          _buildSectionHeader("My Success"),
           const SizedBox(height: 16),
-          ..._programs.map((program) => Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: _buildProgramCard(program),
-              )),
+          _buildSuccessGrid(data.successItems),
+          const SizedBox(height: 28),
+          _buildSectionHeader("Continue Internship"),
+          const SizedBox(height: 16),
+          _buildInternshipCard(data.internship),
+          const SizedBox(height: 28),
+          _buildSectionHeader("Announcements"),
+          const SizedBox(height: 16),
+          _buildAnnouncementCard(data.announcement),
           const SizedBox(height: 28),
           _buildFeedbackForm(),
           const SizedBox(height: 20),

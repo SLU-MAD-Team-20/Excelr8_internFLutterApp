@@ -5,20 +5,9 @@ class ApiConstants {
 
   // --------------- Base URL ---------------
 
-  /// MockAPI base URL.
-  static const String baseUrl = 'https://6a648a5db30b52361e1b1db9.mockapi.io';
+  static const String baseUrl = 'https://6a647b6cb30b52361e1b0e5c.mockapi.io';
 
   // --------------- Endpoints ---------------
 
-  /// Fetches program/home screen data.
-  /// GET {baseUrl}/programs
-  static const String programs = '/programs';
-
-  /// Enrolls the user in a program.
-  /// POST {baseUrl}/enroll
-  static const String enroll = '/enroll';
-
-  /// Submits user feedback.
-  /// POST {baseUrl}/feedback
-  static const String feedback = '/feedback';
+  static const String homescreen = '/homescreen';
 }
