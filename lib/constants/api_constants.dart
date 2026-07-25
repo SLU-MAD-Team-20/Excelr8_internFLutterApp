@@ -5,8 +5,8 @@ class ApiConstants {
 
   // --------------- Base URL ---------------
 
-  /// Replace with your actual API base URL.
-  static const String baseUrl = 'https://api.example.com/v1';
+  /// MockAPI base URL.
+  static const String baseUrl = 'https://6a648a5db30b52361e1b1db9.mockapi.io';
 
   // --------------- Endpoints ---------------
 

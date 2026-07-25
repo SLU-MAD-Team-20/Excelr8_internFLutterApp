@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../models/home_data.dart';
 import '../services/api_service.dart';
 import '../widgets/custom_app_bar.dart';
-import '../widgets/success_card.dart';
 import '../constants/text_styles.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -14,19 +13,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // --------------- State Variables ---------------
-
-  HomeData? _homeData;
+  List<Program> _programs = [];
   bool _isLoading = true;
   String? _errorMessage;
-
-  // --------------- Form ---------------
 
   final _formKey = GlobalKey<FormState>();
   final _feedbackController = TextEditingController();
   bool _isSubmitting = false;
-
-  // --------------- Lifecycle ---------------
 
   @override
   void initState() {
@@ -40,9 +33,6 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
-  // --------------- Data Loading ---------------
-
-  /// Loads home screen data from the API (falls back to local JSON).
   Future<void> _loadData() async {
     setState(() {
       _isLoading = true;
@@ -50,10 +40,9 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     try {
-      final data = await ApiService.getPrograms();
-
+      final programs = await ApiService.getPrograms();
       setState(() {
-        _homeData = data;
+        _programs = programs;
         _isLoading = false;
       });
     } catch (e) {
@@ -64,22 +53,16 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  // --------------- Form Submission ---------------
-
-  /// Validates and submits the feedback form via API.
   Future<void> _submitFeedback() async {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isSubmitting = true);
 
-    // Simulate API call delay for better UX
     await Future<void>.delayed(const Duration(seconds: 2));
 
     try {
       await ApiService.submitFeedback(_feedbackController.text);
-    } catch (_) {
-      // Continue with success flow for mock mode
-    }
+    } catch (_) {}
 
     if (!mounted) return;
 
@@ -92,13 +75,9 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
 
-    // Clear form field
     _feedbackController.clear();
   }
 
-  // --------------- Build Helpers ---------------
-
-  /// Builds the centered loading indicator.
   Widget _buildLoadingIndicator() {
     return const Center(
       child: Padding(
@@ -108,7 +87,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  /// Builds the error message with a retry button.
   Widget _buildErrorView() {
     return Center(
       child: Padding(
@@ -134,7 +112,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  /// Builds the section header with a title and "View all" link.
   Widget _buildSectionHeader(String title) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -145,94 +122,79 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  /// Builds the 2x2 grid of success stat cards.
-  Widget _buildSuccessGrid(List<SuccessItem> items) {
-    return Column(
-      children: [
-        Row(
+  Widget _buildProgramCard(Program program) {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              child: SuccessCard(
-                value: items[0].value,
-                title: items[0].title,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    program.title,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.blue.shade50,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    program.status,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.blue.shade700,
+                    ),
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: SuccessCard(
-                value: items[1].value,
-                title: items[1].title,
-              ),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _buildStatItem(
+                  Icons.people,
+                  '${program.registeredCount} Registered',
+                ),
+                _buildStatItem(
+                  Icons.trending_up,
+                  '${program.progress}%',
+                ),
+              ],
             ),
           ],
         ),
-        const SizedBox(height: 12),
-        Row(
-          children: [
-            Expanded(
-              child: SuccessCard(
-                value: items[2].value,
-                title: items[2].title,
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: SuccessCard(
-                value: items[3].value,
-                title: items[3].title,
-              ),
-            ),
-          ],
+      ),
+    );
+  }
+
+  Widget _buildStatItem(IconData icon, String text) {
+    return Row(
+      children: [
+        Icon(icon, size: 16, color: Colors.grey),
+        const SizedBox(width: 4),
+        Text(
+          text,
+          style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
         ),
       ],
     );
   }
 
-  /// Builds the internship card using data from JSON.
-  Widget _buildInternshipCard(InternshipData data) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: ListTile(
-        contentPadding: const EdgeInsets.all(12),
-        leading: Container(
-          width: 55,
-          height: 55,
-          decoration: BoxDecoration(
-            color: Colors.grey.shade300,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: const Icon(Icons.image),
-        ),
-        title: Text(
-          data.title,
-          style: const TextStyle(fontWeight: FontWeight.w600),
-        ),
-        subtitle: Text(data.description),
-        trailing: const Icon(Icons.chevron_right),
-      ),
-    );
-  }
-
-  /// Builds the announcement card using data from JSON.
-  Widget _buildAnnouncementCard(AnnouncementData data) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: ListTile(
-        contentPadding: const EdgeInsets.all(12),
-        leading: const Icon(Icons.notifications, color: Colors.blue),
-        title: Text(data.title),
-        subtitle: Text(data.subtitle),
-      ),
-    );
-  }
-
-  /// Builds the feedback form section.
   Widget _buildFeedbackForm() {
     return Card(
       elevation: 2,
@@ -251,8 +213,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: AppTextStyles.sectionTitle,
               ),
               const SizedBox(height: 16),
-
-              // Feedback field
               TextFormField(
                 controller: _feedbackController,
                 maxLines: 3,
@@ -273,8 +233,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
               const SizedBox(height: 16),
-
-              // Submit button
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -297,8 +255,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
-  // --------------- Main Build ---------------
 
   @override
   Widget build(BuildContext context) {
@@ -337,34 +293,19 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  /// Builds the full scrollable content when data is loaded.
   Widget _buildContent() {
-    final data = _homeData!;
-
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ---- My Success ----
-          _buildSectionHeader("My Success"),
+          _buildSectionHeader("Programs"),
           const SizedBox(height: 16),
-          _buildSuccessGrid(data.successItems),
+          ..._programs.map((program) => Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: _buildProgramCard(program),
+              )),
           const SizedBox(height: 28),
-
-          // ---- Continue Internship ----
-          _buildSectionHeader("Continue Internship"),
-          const SizedBox(height: 16),
-          _buildInternshipCard(data.internship),
-          const SizedBox(height: 28),
-
-          // ---- Announcements ----
-          _buildSectionHeader("Announcements"),
-          const SizedBox(height: 16),
-          _buildAnnouncementCard(data.announcement),
-          const SizedBox(height: 28),
-
-          // ---- Feedback Form ----
           _buildFeedbackForm(),
           const SizedBox(height: 20),
         ],
