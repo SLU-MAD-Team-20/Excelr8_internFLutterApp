@@ -6,49 +6,46 @@ import 'package:http/http.dart' as http;
 import '../constants/api_constants.dart';
 import '../models/home_data.dart';
 
-/// Service class for handling all API calls.
-/// Uses mock data from local JSON when the real API is unavailable.
 class ApiService {
   ApiService._();
 
-  // --------------- Program Data ---------------
-
-  /// Fetches home screen data from the API.
-  /// Falls back to local JSON asset if the network call fails.
-  static Future<HomeData> getPrograms() async {
+  static Future<HomeData> getHomeData() async {
     try {
       final response = await http
-          .get(Uri.parse('${ApiConstants.baseUrl}${ApiConstants.programs}'))
+          .get(Uri.parse('${ApiConstants.baseUrl}${ApiConstants.homescreen}'))
           .timeout(const Duration(seconds: 10));
 
       if (response.statusCode == 200) {
-        final json = jsonDecode(response.body) as Map<String, dynamic>;
-        return HomeData.fromJson(json);
+        final json = jsonDecode(response.body) as List<dynamic>;
+        if (json.isNotEmpty) {
+          return HomeData.fromJson(json.first as Map<String, dynamic>);
+        }
       }
       throw Exception('Server returned ${response.statusCode}');
     } catch (_) {
-      // Fallback: load from local asset
       return _loadLocalData();
     }
   }
 
-  /// Loads home data from the bundled local JSON file.
   static Future<HomeData> _loadLocalData() async {
     final jsonString =
         await rootBundle.loadString('assets/programs.json');
-    final json = jsonDecode(jsonString) as Map<String, dynamic>;
-    return HomeData.fromJson(json);
+    final json = jsonDecode(jsonString) as List<dynamic>;
+    if (json.isNotEmpty) {
+      return HomeData.fromJson(json.first as Map<String, dynamic>);
+    }
+    return const HomeData(
+      successItems: [],
+      internship: InternshipData(title: '', description: ''),
+      announcement: AnnouncementData(title: '', subtitle: ''),
+    );
   }
 
-  // --------------- Feedback ---------------
-
-  /// Submits feedback to the API.
-  /// Returns true if successful, false otherwise.
   static Future<bool> submitFeedback(String feedback) async {
     try {
       final response = await http
           .post(
-            Uri.parse('${ApiConstants.baseUrl}${ApiConstants.feedback}'),
+            Uri.parse('${ApiConstants.baseUrl}${ApiConstants.homescreen}'),
             headers: {'Content-Type': 'application/json'},
             body: jsonEncode({'feedback': feedback}),
           )
@@ -56,28 +53,6 @@ class ApiService {
 
       return response.statusCode == 200 || response.statusCode == 201;
     } catch (_) {
-      // Simulate success for mock mode
-      return true;
-    }
-  }
-
-  // --------------- Enroll ---------------
-
-  /// Enrolls the user in a program.
-  /// Returns true if successful, false otherwise.
-  static Future<bool> enrollProgram(String programId) async {
-    try {
-      final response = await http
-          .post(
-            Uri.parse('${ApiConstants.baseUrl}${ApiConstants.enroll}'),
-            headers: {'Content-Type': 'application/json'},
-            body: jsonEncode({'programId': programId}),
-          )
-          .timeout(const Duration(seconds: 10));
-
-      return response.statusCode == 200 || response.statusCode == 201;
-    } catch (_) {
-      // Simulate success for mock mode
       return true;
     }
   }

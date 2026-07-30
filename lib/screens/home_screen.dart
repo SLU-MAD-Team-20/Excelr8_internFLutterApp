@@ -14,19 +14,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // --------------- State Variables ---------------
-
   HomeData? _homeData;
   bool _isLoading = true;
   String? _errorMessage;
 
-  // --------------- Form ---------------
-
   final _formKey = GlobalKey<FormState>();
   final _feedbackController = TextEditingController();
   bool _isSubmitting = false;
-
-  // --------------- Lifecycle ---------------
 
   @override
   void initState() {
@@ -40,9 +34,6 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
-  // --------------- Data Loading ---------------
-
-  /// Loads home screen data from the API (falls back to local JSON).
   Future<void> _loadData() async {
     setState(() {
       _isLoading = true;
@@ -50,8 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     try {
-      final data = await ApiService.getPrograms();
-
+      final data = await ApiService.getHomeData();
       setState(() {
         _homeData = data;
         _isLoading = false;
@@ -64,22 +54,16 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  // --------------- Form Submission ---------------
-
-  /// Validates and submits the feedback form via API.
   Future<void> _submitFeedback() async {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isSubmitting = true);
 
-    // Simulate API call delay for better UX
     await Future<void>.delayed(const Duration(seconds: 2));
 
     try {
       await ApiService.submitFeedback(_feedbackController.text);
-    } catch (_) {
-      // Continue with success flow for mock mode
-    }
+    } catch (_) {}
 
     if (!mounted) return;
 
@@ -92,13 +76,9 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
 
-    // Clear form field
     _feedbackController.clear();
   }
 
-  // --------------- Build Helpers ---------------
-
-  /// Builds the centered loading indicator.
   Widget _buildLoadingIndicator() {
     return const Center(
       child: Padding(
@@ -108,7 +88,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  /// Builds the error message with a retry button.
   Widget _buildErrorView() {
     return Center(
       child: Padding(
@@ -134,7 +113,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  /// Builds the section header with a title and "View all" link.
   Widget _buildSectionHeader(String title) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -145,56 +123,32 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  /// Builds the 2x2 grid of success stat cards.
   Widget _buildSuccessGrid(List<SuccessItem> items) {
     return Column(
       children: [
         Row(
           children: [
-            Expanded(
-              child: SuccessCard(
-                value: items[0].value,
-                title: items[0].title,
-              ),
-            ),
+            Expanded(child: SuccessCard(value: items[0].value, title: items[0].title)),
             const SizedBox(width: 12),
-            Expanded(
-              child: SuccessCard(
-                value: items[1].value,
-                title: items[1].title,
-              ),
-            ),
+            Expanded(child: SuccessCard(value: items[1].value, title: items[1].title)),
           ],
         ),
         const SizedBox(height: 12),
         Row(
           children: [
-            Expanded(
-              child: SuccessCard(
-                value: items[2].value,
-                title: items[2].title,
-              ),
-            ),
+            Expanded(child: SuccessCard(value: items[2].value, title: items[2].title)),
             const SizedBox(width: 12),
-            Expanded(
-              child: SuccessCard(
-                value: items[3].value,
-                title: items[3].title,
-              ),
-            ),
+            Expanded(child: SuccessCard(value: items[3].value, title: items[3].title)),
           ],
         ),
       ],
     );
   }
 
-  /// Builds the internship card using data from JSON.
   Widget _buildInternshipCard(InternshipData data) {
     return Card(
       elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(14),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       child: ListTile(
         contentPadding: const EdgeInsets.all(12),
         leading: Container(
@@ -204,25 +158,19 @@ class _HomeScreenState extends State<HomeScreen> {
             color: Colors.grey.shade300,
             borderRadius: BorderRadius.circular(8),
           ),
-          child: const Icon(Icons.image),
+          child: const Icon(Icons.code),
         ),
-        title: Text(
-          data.title,
-          style: const TextStyle(fontWeight: FontWeight.w600),
-        ),
+        title: Text(data.title, style: const TextStyle(fontWeight: FontWeight.w600)),
         subtitle: Text(data.description),
         trailing: const Icon(Icons.chevron_right),
       ),
     );
   }
 
-  /// Builds the announcement card using data from JSON.
   Widget _buildAnnouncementCard(AnnouncementData data) {
     return Card(
       elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(14),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       child: ListTile(
         contentPadding: const EdgeInsets.all(12),
         leading: const Icon(Icons.notifications, color: Colors.blue),
@@ -232,13 +180,10 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  /// Builds the feedback form section.
   Widget _buildFeedbackForm() {
     return Card(
       elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(14),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Form(
@@ -246,13 +191,8 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                "Feedback",
-                style: AppTextStyles.sectionTitle,
-              ),
+              const Text("Feedback", style: AppTextStyles.sectionTitle),
               const SizedBox(height: 16),
-
-              // Feedback field
               TextFormField(
                 controller: _feedbackController,
                 maxLines: 3,
@@ -273,8 +213,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
               const SizedBox(height: 16),
-
-              // Submit button
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -283,10 +221,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ? const SizedBox(
                           height: 20,
                           width: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: Colors.white,
-                          ),
+                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                         )
                       : const Text('Submit'),
                 ),
@@ -297,8 +232,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
-  // --------------- Main Build ---------------
 
   @override
   Widget build(BuildContext context) {
@@ -320,24 +253,14 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: 0,
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: "Home",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.school),
-            label: "Programs",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: "Profile",
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+          BottomNavigationBarItem(icon: Icon(Icons.school), label: "Programs"),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
         ],
       ),
     );
   }
 
-  /// Builds the full scrollable content when data is loaded.
   Widget _buildContent() {
     final data = _homeData!;
 
@@ -346,25 +269,18 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ---- My Success ----
           _buildSectionHeader("My Success"),
           const SizedBox(height: 16),
           _buildSuccessGrid(data.successItems),
           const SizedBox(height: 28),
-
-          // ---- Continue Internship ----
           _buildSectionHeader("Continue Internship"),
           const SizedBox(height: 16),
           _buildInternshipCard(data.internship),
           const SizedBox(height: 28),
-
-          // ---- Announcements ----
           _buildSectionHeader("Announcements"),
           const SizedBox(height: 16),
           _buildAnnouncementCard(data.announcement),
           const SizedBox(height: 28),
-
-          // ---- Feedback Form ----
           _buildFeedbackForm(),
           const SizedBox(height: 20),
         ],
