@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-
 import '../models/home_data.dart';
 import '../services/api_service.dart';
 import '../widgets/custom_app_bar.dart';
 import '../widgets/success_card.dart';
 import '../constants/text_styles.dart';
+import 'program_list_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -17,7 +17,6 @@ class _HomeScreenState extends State<HomeScreen> {
   HomeData? _homeData;
   bool _isLoading = true;
   String? _errorMessage;
-
   final _formKey = GlobalKey<FormState>();
   final _feedbackController = TextEditingController();
   bool _isSubmitting = false;
@@ -39,7 +38,6 @@ class _HomeScreenState extends State<HomeScreen> {
       _isLoading = true;
       _errorMessage = null;
     });
-
     try {
       final data = await ApiService.getHomeData();
       setState(() {
@@ -56,26 +54,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _submitFeedback() async {
     if (!_formKey.currentState!.validate()) return;
-
     setState(() => _isSubmitting = true);
-
     await Future<void>.delayed(const Duration(seconds: 2));
-
     try {
       await ApiService.submitFeedback(_feedbackController.text);
     } catch (_) {}
-
     if (!mounted) return;
-
     setState(() => _isSubmitting = false);
-
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Feedback submitted successfully!'),
         backgroundColor: Colors.green,
       ),
     );
-
     _feedbackController.clear();
   }
 
@@ -175,7 +166,7 @@ class _HomeScreenState extends State<HomeScreen> {
         contentPadding: const EdgeInsets.all(12),
         leading: const Icon(Icons.notifications, color: Colors.blue),
         title: Text(data.title),
-        subtitle: Text(data.subtitle),
+        subtitle: Text(data.announcement),
       ),
     );
   }
@@ -252,6 +243,16 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: 0,
+        onTap: (index) {
+          if (index == 1) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const ProgramListScreen(),
+              ),
+            );
+          }
+        },
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
           BottomNavigationBarItem(icon: Icon(Icons.school), label: "Programs"),
@@ -263,7 +264,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildContent() {
     final data = _homeData!;
-
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
