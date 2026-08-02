@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class CustomHomeAppBar extends StatelessWidget
-    implements PreferredSizeWidget {
+class CustomHomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomHomeAppBar({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+    final name = user?.displayName ?? user?.email?.split("@").first ?? "User";
+
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
       surfaceTintColor: Colors.white,
-      leading: const Icon(
-        Icons.menu,
-        color: Colors.black,
-      ),
-      title: const Text(
-        "Welcome, User",
-        style: TextStyle(
+      leading: const Icon(Icons.menu, color: Colors.black),
+      title: Text(
+        "Welcome, $name",
+        style: const TextStyle(
           color: Colors.black,
           fontSize: 22,
           fontWeight: FontWeight.w600,

@@ -4,6 +4,10 @@ class Program {
   final String status;
   final int registeredCount;
   final double progress;
+  final String description;
+  final int durationWeeks;
+  final String startDate;
+  final List<String> enrolledUsers;
 
   Program({
     required this.id,
@@ -11,18 +15,9 @@ class Program {
     required this.status,
     required this.registeredCount,
     required this.progress,
+    this.description = '',
+    this.durationWeeks = 8,
+    this.startDate = 'TBD',
+    this.enrolledUsers = const [],
   });
-
-  // Factory constructor: Converts JSON map from the API into a Program object
-  factory Program.fromJson(Map<String, dynamic> json) {
-    return Program(
-      id: json['id']?.toString() ?? '',
-      title: json['title'] ?? 'Untitled Program',
-      // The Mock API provides 'id' and 'title'. We assign status, count,
-      // and progress dynamically based on the ID so every program looks unique.
-      status: (json['id'] % 2 == 0) ? 'ACTIVE' : 'DRAFT',
-      registeredCount: (json['id'] * 7) as int,
-      progress: ((json['id'] * 15) % 100) / 100.0,
-    );
-  }
 }

@@ -1,20 +1,29 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'firestore_service.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  // ==========================
-  // SIGN UP
-  // ==========================
   Future<String?> signUp({
     required String email,
     required String password,
+    required String username,
   }) async {
     try {
-      await _auth.createUserWithEmailAndPassword(
+      final credential = await _auth.createUserWithEmailAndPassword(
         email: email.trim(),
         password: password.trim(),
       );
+      await credential.user?.updateDisplayName(username.trim());
+
+      // Initialize user data in Firestore
+      if (credential.user != null) {
+        await FirestoreService.initUserData(
+            credential.user!.uid, username.trim());
+      }
+
+      // Seed initial app data if not already present
+      await FirestoreService.seedInitialData();
 
       return null;
     } on FirebaseAuthException catch (e) {
@@ -33,9 +42,6 @@ class AuthService {
     }
   }
 
-  // ==========================
-  // SIGN IN
-  // ==========================
   Future<String?> signIn({
     required String email,
     required String password,
@@ -45,6 +51,9 @@ class AuthService {
         email: email.trim(),
         password: password.trim(),
       );
+
+      // Seed initial data in case it's missing
+      await FirestoreService.seedInitialData();
 
       return null;
     } on FirebaseAuthException catch (e) {
@@ -65,17 +74,9 @@ class AuthService {
     }
   }
 
-  // ==========================
-  // RESET PASSWORD
-  // ==========================
-  Future<String?> resetPassword({
-    required String email,
-  }) async {
+  Future<String?> resetPassword({required String email}) async {
     try {
-      await _auth.sendPasswordResetEmail(
-        email: email.trim(),
-      );
-
+      await _auth.sendPasswordResetEmail(email: email.trim());
       return null;
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
