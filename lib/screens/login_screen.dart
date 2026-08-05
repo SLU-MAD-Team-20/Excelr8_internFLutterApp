@@ -45,10 +45,9 @@ class _LoginScreenState extends State<LoginScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (_) =>
-              adminEmails.contains(_emailController.text.trim())
-                  ? const AdminDashboardScreen()
-                  : const HomeScreen(),
+          builder: (_) => adminEmails.contains(_emailController.text.trim())
+              ? const AdminDashboardScreen()
+              : const HomeScreen(),
         ),
       );
     } else {
@@ -58,7 +57,8 @@ class _LoginScreenState extends State<LoginScreen> {
           backgroundColor: Colors.red.shade400,
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10)),
+            borderRadius: BorderRadius.circular(10),
+          ),
         ),
       );
     }
@@ -66,8 +66,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Scaffold(
       body: Column(
         children: [
@@ -99,8 +97,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         color: Colors.white.withOpacity(0.15),
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: const Icon(Icons.arrow_back,
-                          color: Colors.white, size: 20),
+                      child: const Icon(
+                        Icons.arrow_back,
+                        color: Colors.white,
+                        size: 20,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -162,12 +163,13 @@ class _LoginScreenState extends State<LoginScreen> {
                         onPressed: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (_) =>
-                                  const ForgotPasswordScreen()),
+                            builder: (_) => const ForgotPasswordScreen(),
+                          ),
                         ),
-                        child: const Text('Forgot Password?',
-                            style:
-                                TextStyle(color: Color(0xFF1565C0))),
+                        child: const Text(
+                          'Forgot Password?',
+                          style: TextStyle(color: Color(0xFF1565C0)),
+                        ),
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -189,33 +191,35 @@ class _LoginScreenState extends State<LoginScreen> {
                                 height: 22,
                                 width: 22,
                                 child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    color: Colors.white),
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
                               )
-                            : const Text('Sign In',
+                            : const Text(
+                                'Sign In',
                                 style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600)),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
                       ),
                     ),
                     const SizedBox(height: 24),
 
                     Row(
                       children: [
-                        Expanded(
-                            child:
-                                Divider(color: Colors.grey.shade300)),
+                        Expanded(child: Divider(color: Colors.grey.shade300)),
                         Padding(
-                          padding:
-                              const EdgeInsets.symmetric(horizontal: 12),
-                          child: Text('or',
-                              style: TextStyle(
-                                  color: Colors.grey.shade500,
-                                  fontSize: 13)),
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          child: Text(
+                            'or',
+                            style: TextStyle(
+                              color: Colors.grey.shade500,
+                              fontSize: 13,
+                            ),
+                          ),
                         ),
-                        Expanded(
-                            child:
-                                Divider(color: Colors.grey.shade300)),
+                        Expanded(child: Divider(color: Colors.grey.shade300)),
                       ],
                     ),
                     const SizedBox(height: 24),
@@ -223,21 +227,28 @@ class _LoginScreenState extends State<LoginScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text("Don't have an account?",
-                            style: TextStyle(
-                                color: Colors.grey.shade600,
-                                fontSize: 14)),
+                        Text(
+                          "Don't have an account?",
+                          style: TextStyle(
+                            color: Colors.grey.shade600,
+                            fontSize: 14,
+                          ),
+                        ),
                         TextButton(
                           onPressed: () => Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (_) => const SignupScreen()),
+                              builder: (_) => const SignupScreen(),
+                            ),
                           ),
-                          child: const Text('Sign Up',
-                              style: TextStyle(
-                                  color: Color(0xFF1565C0),
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 14)),
+                          child: const Text(
+                            'Sign Up',
+                            style: TextStyle(
+                              color: Color(0xFF1565C0),
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14,
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -252,8 +263,9 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buildLabel(String text) {
-    return Text(text,
-        style: const TextStyle(
-            fontSize: 14, fontWeight: FontWeight.w600));
+    return Text(
+      text,
+      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+    );
   }
 }

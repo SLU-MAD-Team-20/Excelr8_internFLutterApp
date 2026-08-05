@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
-import '../constants/app_text_styles.dart';
+import '../constants/text_styles.dart';
 
 class CustomButton extends StatelessWidget {
   final String text;
   final VoidCallback? onPressed;
 
-  const CustomButton({
-    super.key,
-    required this.text,
-    this.onPressed,
-  });
+  const CustomButton({super.key, required this.text, this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -29,10 +25,7 @@ class CustomButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(15),
           ),
         ),
-        child: Text(
-          text,
-          style: AppTextStyles.button,
-        ),
+        child: Text(text, style: AppTextStyles.button),
       ),
     );
   }
