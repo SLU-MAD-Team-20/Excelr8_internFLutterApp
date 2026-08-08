@@ -37,13 +37,11 @@ class _HomeScreenState extends State<HomeScreen>
       vsync: this,
       duration: const Duration(milliseconds: 600),
     );
-    _fadeAnim =
-        CurvedAnimation(parent: _animController, curve: Curves.easeOut);
+    _fadeAnim = CurvedAnimation(parent: _animController, curve: Curves.easeOut);
     _slideAnim = Tween<Offset>(
       begin: const Offset(0, 0.08),
       end: Offset.zero,
-    ).animate(
-        CurvedAnimation(parent: _animController, curve: Curves.easeOut));
+    ).animate(CurvedAnimation(parent: _animController, curve: Curves.easeOut));
     _loadData();
   }
 
@@ -103,8 +101,7 @@ class _HomeScreenState extends State<HomeScreen>
 
   Widget _buildDrawer(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
-    final name =
-        user?.displayName ?? user?.email?.split('@').first ?? 'User';
+    final name = user?.displayName ?? user?.email?.split('@').first ?? 'User';
 
     return Drawer(
       child: SafeArea(
@@ -125,70 +122,81 @@ class _HomeScreenState extends State<HomeScreen>
                 children: [
                   CircleAvatar(
                     radius: 32,
-                    backgroundColor: Colors.white.withOpacity(0.2),
+                    backgroundColor: Colors.white.withValues(alpha: 0.2),
                     child: Text(
                       name.isNotEmpty ? name[0].toUpperCase() : 'U',
                       style: const TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 12),
-                  Text(name,
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold)),
-                  Text(user?.email ?? '',
-                      style: const TextStyle(
-                          color: Colors.white70, fontSize: 13)),
+                  Text(
+                    name,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    user?.email ?? '',
+                    style: const TextStyle(color: Colors.white70, fontSize: 13),
+                  ),
                   if (_isAdmin)
                     Container(
                       margin: const EdgeInsets.only(top: 8),
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 2),
+                        horizontal: 8,
+                        vertical: 2,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.orange,
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: const Text('Admin',
-                          style: TextStyle(
-                              color: Colors.white, fontSize: 12)),
+                      child: const Text(
+                        'Admin',
+                        style: TextStyle(color: Colors.white, fontSize: 12),
+                      ),
                     ),
                 ],
               ),
             ),
             const SizedBox(height: 8),
-            _buildDrawerItem(context, Icons.home, 'Home',
-                () => Navigator.pop(context)),
+            _buildDrawerItem(
+              context,
+              Icons.home,
+              'Home',
+              () => Navigator.pop(context),
+            ),
             _buildDrawerItem(context, Icons.school, 'Programs', () {
               Navigator.pop(context);
               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (_) => const ProgramListScreen()));
+                context,
+                MaterialPageRoute(builder: (_) => const ProgramListScreen()),
+              );
             }),
             _buildDrawerItem(context, Icons.person, 'Profile', () {
               Navigator.pop(context);
               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (_) => const ProfileScreen()));
+                context,
+                MaterialPageRoute(builder: (_) => const ProfileScreen()),
+              );
             }),
             const Divider(),
             ValueListenableBuilder<ThemeMode>(
               valueListenable: themeNotifier,
               builder: (context, mode, _) => ListTile(
-                leading: Icon(mode == ThemeMode.dark
-                    ? Icons.dark_mode
-                    : Icons.light_mode),
-                title: const Text('Dark Mode',
-                    style: TextStyle(fontSize: 15)),
+                leading: Icon(
+                  mode == ThemeMode.dark ? Icons.dark_mode : Icons.light_mode,
+                ),
+                title: const Text('Dark Mode', style: TextStyle(fontSize: 15)),
                 trailing: Switch(
                   value: mode == ThemeMode.dark,
                   onChanged: (_) => themeNotifier.toggle(),
-                  activeColor: Colors.blue,
+                  activeThumbColor: Colors.blue,
                 ),
               ),
             ),
@@ -199,8 +207,7 @@ class _HomeScreenState extends State<HomeScreen>
               if (context.mounted) {
                 Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(
-                      builder: (_) => const LandingScreen()),
+                  MaterialPageRoute(builder: (_) => const LandingScreen()),
                   (route) => false,
                 );
               }
@@ -213,15 +220,22 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   Widget _buildDrawerItem(
-      BuildContext context, IconData icon, String label, VoidCallback onTap,
-      {Color? color}) {
+    BuildContext context,
+    IconData icon,
+    String label,
+    VoidCallback onTap, {
+    Color? color,
+  }) {
     final theme = Theme.of(context);
     return ListTile(
       leading: Icon(icon, color: color ?? theme.iconTheme.color),
-      title: Text(label,
-          style: TextStyle(
-              color: color ?? theme.textTheme.bodyLarge?.color,
-              fontSize: 15)),
+      title: Text(
+        label,
+        style: TextStyle(
+          color: color ?? theme.textTheme.bodyLarge?.color,
+          fontSize: 15,
+        ),
+      ),
       onTap: onTap,
     );
   }
@@ -241,12 +255,7 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   Widget _buildSuccessGrid(List<SuccessItem> items) {
-    final colors = [
-      Colors.blue,
-      Colors.purple,
-      Colors.orange,
-      Colors.green
-    ];
+    final colors = [Colors.blue, Colors.purple, Colors.orange, Colors.green];
     final icons = [
       Icons.school_outlined,
       Icons.psychology_outlined,
@@ -258,36 +267,44 @@ class _HomeScreenState extends State<HomeScreen>
         Row(
           children: [
             Expanded(
-                child: SuccessCard(
-                    value: items[0].value,
-                    title: items[0].title,
-                    color: colors[0],
-                    icon: icons[0])),
+              child: SuccessCard(
+                value: items[0].value,
+                title: items[0].title,
+                color: colors[0],
+                icon: icons[0],
+              ),
+            ),
             const SizedBox(width: 12),
             Expanded(
-                child: SuccessCard(
-                    value: items[1].value,
-                    title: items[1].title,
-                    color: colors[1],
-                    icon: icons[1])),
+              child: SuccessCard(
+                value: items[1].value,
+                title: items[1].title,
+                color: colors[1],
+                icon: icons[1],
+              ),
+            ),
           ],
         ),
         const SizedBox(height: 12),
         Row(
           children: [
             Expanded(
-                child: SuccessCard(
-                    value: items[2].value,
-                    title: items[2].title,
-                    color: colors[2],
-                    icon: icons[2])),
+              child: SuccessCard(
+                value: items[2].value,
+                title: items[2].title,
+                color: colors[2],
+                icon: icons[2],
+              ),
+            ),
             const SizedBox(width: 12),
             Expanded(
-                child: SuccessCard(
-                    value: items[3].value,
-                    title: items[3].title,
-                    color: colors[3],
-                    icon: icons[3])),
+              child: SuccessCard(
+                value: items[3].value,
+                title: items[3].title,
+                color: colors[3],
+                icon: icons[3],
+              ),
+            ),
           ],
         ),
       ],
@@ -297,28 +314,32 @@ class _HomeScreenState extends State<HomeScreen>
   Widget _buildInternshipCard(BuildContext context, InternshipData data) {
     return Card(
       elevation: 2,
-      shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       child: ListTile(
         contentPadding: const EdgeInsets.all(12),
         leading: Container(
           width: 55,
           height: 55,
           decoration: BoxDecoration(
-            color: Colors.blue.withOpacity(0.12),
+            color: Colors.blue.withValues(alpha: 0.12),
             borderRadius: BorderRadius.circular(8),
           ),
           child: const Icon(Icons.code, color: Colors.blue),
         ),
-        title: Text(data.title,
-            style: const TextStyle(fontWeight: FontWeight.w600)),
-        subtitle:
-            Text(data.description, maxLines: 2, overflow: TextOverflow.ellipsis),
+        title: Text(
+          data.title,
+          style: const TextStyle(fontWeight: FontWeight.w600),
+        ),
+        subtitle: Text(
+          data.description,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
         trailing: const Icon(Icons.chevron_right, color: Colors.blue),
         onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (_) => const ProgramListScreen())),
+          context,
+          MaterialPageRoute(builder: (_) => const ProgramListScreen()),
+        ),
       ),
     );
   }
@@ -326,24 +347,27 @@ class _HomeScreenState extends State<HomeScreen>
   Widget _buildAnnouncementCard(AnnouncementData data) {
     return Card(
       elevation: 2,
-      shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       child: ListTile(
         contentPadding: const EdgeInsets.all(12),
         leading: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: Colors.orange.withOpacity(0.12),
+            color: Colors.orange.withValues(alpha: 0.12),
             borderRadius: BorderRadius.circular(8),
           ),
-          child:
-              const Icon(Icons.campaign_outlined, color: Colors.orange),
+          child: const Icon(Icons.campaign_outlined, color: Colors.orange),
         ),
-        title: Text(data.title,
-            style: const TextStyle(fontWeight: FontWeight.w600)),
+        title: Text(
+          data.title,
+          style: const TextStyle(fontWeight: FontWeight.w600),
+        ),
         subtitle: Text(data.subtitle),
-        trailing: const Icon(Icons.arrow_forward_ios,
-            size: 14, color: Colors.grey),
+        trailing: const Icon(
+          Icons.arrow_forward_ios,
+          size: 14,
+          color: Colors.grey,
+        ),
       ),
     );
   }
@@ -351,8 +375,7 @@ class _HomeScreenState extends State<HomeScreen>
   Widget _buildFeedbackForm() {
     return Card(
       elevation: 2,
-      shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Form(
@@ -365,15 +388,19 @@ class _HomeScreenState extends State<HomeScreen>
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: Colors.blue.withOpacity(0.12),
+                      color: Colors.blue.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: const Icon(Icons.feedback_outlined,
-                        color: Colors.blue),
+                    child: const Icon(
+                      Icons.feedback_outlined,
+                      color: Colors.blue,
+                    ),
                   ),
                   const SizedBox(width: 12),
-                  const Text('Share Feedback',
-                      style: AppTextStyles.sectionTitle),
+                  const Text(
+                    'Share Feedback',
+                    style: AppTextStyles.sectionTitle,
+                  ),
                 ],
               ),
               const SizedBox(height: 16),
@@ -402,17 +429,22 @@ class _HomeScreenState extends State<HomeScreen>
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
                   child: _isSubmitting
                       ? const SizedBox(
                           height: 20,
                           width: 20,
                           child: CircularProgressIndicator(
-                              strokeWidth: 2, color: Colors.white),
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
                         )
-                      : const Text('Submit Feedback',
-                          style: TextStyle(fontSize: 15)),
+                      : const Text(
+                          'Submit Feedback',
+                          style: TextStyle(fontSize: 15),
+                        ),
                 ),
               ),
             ],
@@ -436,19 +468,27 @@ class _HomeScreenState extends State<HomeScreen>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildSectionHeader('My Success',
-                    onViewAll: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => const ProgramListScreen()))),
+                _buildSectionHeader(
+                  'My Success',
+                  onViewAll: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const ProgramListScreen(),
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 16),
                 _buildSuccessGrid(data.successItems),
                 const SizedBox(height: 28),
-                _buildSectionHeader('Continue Internship',
-                    onViewAll: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => const ProgramListScreen()))),
+                _buildSectionHeader(
+                  'Continue Internship',
+                  onViewAll: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const ProgramListScreen(),
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 16),
                 _buildInternshipCard(context, data.internship),
                 const SizedBox(height: 28),
@@ -469,8 +509,7 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
-    final name =
-        user?.displayName ?? user?.email?.split('@').first ?? 'User';
+    final name = user?.displayName ?? user?.email?.split('@').first ?? 'User';
     final theme = Theme.of(context);
 
     return Scaffold(
@@ -514,31 +553,30 @@ class _HomeScreenState extends State<HomeScreen>
         child: _isLoading
             ? const Center(child: CircularProgressIndicator())
             : _errorMessage != null
-                ? Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(24),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(Icons.wifi_off,
-                              size: 56, color: Colors.grey),
-                          const SizedBox(height: 16),
-                          Text(
-                              _errorMessage ?? 'Something went wrong.',
-                              textAlign: TextAlign.center,
-                              style:
-                                  const TextStyle(color: Colors.grey)),
-                          const SizedBox(height: 20),
-                          ElevatedButton.icon(
-                            onPressed: _loadData,
-                            icon: const Icon(Icons.refresh),
-                            label: const Text('Try Again'),
-                          ),
-                        ],
+            ? Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.wifi_off, size: 56, color: Colors.grey),
+                      const SizedBox(height: 16),
+                      Text(
+                        _errorMessage ?? 'Something went wrong.',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(color: Colors.grey),
                       ),
-                    ),
-                  )
-                : _buildContent(context),
+                      const SizedBox(height: 20),
+                      ElevatedButton.icon(
+                        onPressed: _loadData,
+                        icon: const Icon(Icons.refresh),
+                        label: const Text('Try Again'),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            : _buildContent(context),
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
@@ -546,29 +584,32 @@ class _HomeScreenState extends State<HomeScreen>
           setState(() => _currentIndex = index);
           if (index == 1) {
             Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (_) => const ProgramListScreen()));
+              context,
+              MaterialPageRoute(builder: (_) => const ProgramListScreen()),
+            );
           } else if (index == 2) {
             Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (_) => const ProfileScreen()));
+              context,
+              MaterialPageRoute(builder: (_) => const ProfileScreen()),
+            );
           }
         },
         items: const [
           BottomNavigationBarItem(
-              icon: Icon(Icons.home_outlined),
-              activeIcon: Icon(Icons.home),
-              label: 'Home'),
+            icon: Icon(Icons.home_outlined),
+            activeIcon: Icon(Icons.home),
+            label: 'Home',
+          ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.school_outlined),
-              activeIcon: Icon(Icons.school),
-              label: 'Programs'),
+            icon: Icon(Icons.school_outlined),
+            activeIcon: Icon(Icons.school),
+            label: 'Programs',
+          ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline),
-              activeIcon: Icon(Icons.person),
-              label: 'Profile'),
+            icon: Icon(Icons.person_outline),
+            activeIcon: Icon(Icons.person),
+            label: 'Profile',
+          ),
         ],
       ),
     );

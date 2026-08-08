@@ -37,7 +37,9 @@ class LandingScreen extends StatelessWidget {
                       width: 100,
                       height: 56,
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 8),
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.black,
                         borderRadius: BorderRadius.circular(14),
@@ -45,7 +47,7 @@ class LandingScreen extends StatelessWidget {
                       child: Image.asset(
                         'assets/images/excelerate_logo.jpeg',
                         fit: BoxFit.contain,
-                        errorBuilder: (_, __, ___) => const Text(
+                        errorBuilder: (_, _, _) => const Text(
                           'Excelerate',
                           style: TextStyle(
                             color: Colors.white,
@@ -72,7 +74,7 @@ class LandingScreen extends StatelessWidget {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 14,
-                        color: Colors.white.withOpacity(0.85),
+                        color: Colors.white.withValues(alpha: 0.85),
                       ),
                     ),
                     const SizedBox(height: 36),
@@ -81,12 +83,9 @@ class LandingScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        _buildFeature(
-                            Icons.play_lesson_outlined, 'Learn'),
-                        _buildFeature(
-                            Icons.track_changes_outlined, 'Track'),
-                        _buildFeature(
-                            Icons.military_tech_outlined, 'Achieve'),
+                        _buildFeature(Icons.play_lesson_outlined, 'Learn'),
+                        _buildFeature(Icons.track_changes_outlined, 'Track'),
+                        _buildFeature(Icons.military_tech_outlined, 'Achieve'),
                       ],
                     ),
                   ],
@@ -98,9 +97,7 @@ class LandingScreen extends StatelessWidget {
           // ── Bottom section ────────────────────────────────────
           Expanded(
             child: Container(
-              color: isDark
-                  ? const Color(0xFF121212)
-                  : const Color(0xFFF6F6F6),
+              color: isDark ? const Color(0xFF121212) : const Color(0xFFF6F6F6),
               padding: const EdgeInsets.all(24),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -108,13 +105,11 @@ class LandingScreen extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(28),
                     decoration: BoxDecoration(
-                      color: isDark
-                          ? const Color(0xFF1E1E1E)
-                          : Colors.white,
+                      color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                       borderRadius: BorderRadius.circular(24),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.blue.withOpacity(0.1),
+                          color: Colors.blue.withValues(alpha: 0.1),
                           blurRadius: 20,
                           offset: const Offset(0, 8),
                         ),
@@ -151,7 +146,8 @@ class LandingScreen extends StatelessWidget {
                             onPressed: () => Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (_) => const LoginScreen()),
+                                builder: (_) => const LoginScreen(),
+                              ),
                             ),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF1565C0),
@@ -164,8 +160,9 @@ class LandingScreen extends StatelessWidget {
                             child: const Text(
                               'Sign In',
                               style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600),
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
                         ),
@@ -179,12 +176,15 @@ class LandingScreen extends StatelessWidget {
                             onPressed: () => Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (_) => const SignupScreen()),
+                                builder: (_) => const SignupScreen(),
+                              ),
                             ),
                             style: OutlinedButton.styleFrom(
                               foregroundColor: const Color(0xFF1565C0),
                               side: const BorderSide(
-                                  color: Color(0xFF1565C0), width: 2),
+                                color: Color(0xFF1565C0),
+                                width: 2,
+                              ),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(14),
                               ),
@@ -192,8 +192,9 @@ class LandingScreen extends StatelessWidget {
                             child: const Text(
                               'Create Account',
                               style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600),
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
                         ),
@@ -215,10 +216,10 @@ class LandingScreen extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.15),
+            color: Colors.white.withValues(alpha: 0.15),
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: Colors.white.withOpacity(0.3),
+              color: Colors.white.withValues(alpha: 0.3),
               width: 1.5,
             ),
           ),

@@ -6,9 +6,7 @@ import 'providers/theme_notifier.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const ExcelerateApp());
 }
 
@@ -57,14 +55,13 @@ class ExcelerateApp extends StatelessWidget {
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide:
-                    const BorderSide(color: Colors.blue, width: 2),
+                borderSide: const BorderSide(color: Colors.blue, width: 2),
               ),
             ),
             cardTheme: CardThemeData(
               color: Colors.white,
               elevation: 2,
-              shadowColor: Colors.black.withOpacity(0.08),
+              shadowColor: Colors.black.withValues(alpha: 0.08),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(14),
               ),
@@ -78,9 +75,9 @@ class ExcelerateApp extends StatelessWidget {
               }),
               trackColor: WidgetStateProperty.resolveWith((states) {
                 if (states.contains(WidgetState.selected)) {
-                  return Colors.blue.withOpacity(0.3);
+                  return Colors.blue.withValues(alpha: 0.3);
                 }
-                return Colors.grey.withOpacity(0.3);
+                return Colors.grey.withValues(alpha: 0.3);
               }),
             ),
             tabBarTheme: const TabBarThemeData(
@@ -129,8 +126,7 @@ class ExcelerateApp extends StatelessWidget {
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide:
-                    const BorderSide(color: Colors.blue, width: 2),
+                borderSide: const BorderSide(color: Colors.blue, width: 2),
               ),
             ),
             cardTheme: CardThemeData(
@@ -150,9 +146,9 @@ class ExcelerateApp extends StatelessWidget {
               }),
               trackColor: WidgetStateProperty.resolveWith((states) {
                 if (states.contains(WidgetState.selected)) {
-                  return Colors.blue.withOpacity(0.3);
+                  return Colors.blue.withValues(alpha: 0.3);
                 }
-                return Colors.grey.withOpacity(0.3);
+                return Colors.grey.withValues(alpha: 0.3);
               }),
             ),
             tabBarTheme: const TabBarThemeData(

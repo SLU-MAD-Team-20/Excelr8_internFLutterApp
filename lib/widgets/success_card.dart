@@ -21,17 +21,15 @@ class SuccessCard extends StatelessWidget {
 
     return Card(
       elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(14),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       child: Container(
         height: 110,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(14),
           gradient: LinearGradient(
             colors: [
-              cardColor.withOpacity(isDark ? 0.2 : 0.08),
-              cardColor.withOpacity(isDark ? 0.08 : 0.03),
+              cardColor.withValues(alpha: isDark ? 0.2 : 0.08),
+              cardColor.withValues(alpha: isDark ? 0.08 : 0.03),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,

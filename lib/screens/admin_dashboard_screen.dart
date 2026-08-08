@@ -4,50 +4,47 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../providers/theme_notifier.dart';
 import 'program_list_screen.dart';
 import 'landing_screen.dart';
- 
+
 class AdminDashboardScreen extends StatefulWidget {
   const AdminDashboardScreen({super.key});
- 
+
   @override
   State<AdminDashboardScreen> createState() => _AdminDashboardScreenState();
 }
- 
+
 class _AdminDashboardScreenState extends State<AdminDashboardScreen>
     with SingleTickerProviderStateMixin {
   final _db = FirebaseFirestore.instance;
   late TabController _tabController;
- 
+
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
   }
- 
+
   @override
   void dispose() {
     _tabController.dispose();
     super.dispose();
   }
- 
+
   Stream<Map<String, dynamic>> _statsStream() {
     return _db.collection('programs').snapshots().asyncMap((programSnap) async {
       final programs = programSnap.docs.map((d) => d.data()).toList();
-      final activeCount =
-          programs.where((p) => p['status'] == 'ACTIVE').length;
-      final draftCount =
-          programs.where((p) => p['status'] == 'DRAFT').length;
+      final activeCount = programs.where((p) => p['status'] == 'ACTIVE').length;
+      final draftCount = programs.where((p) => p['status'] == 'DRAFT').length;
       final totalEnrolled = programs.fold<int>(
-          0,
-          (sum, p) =>
-              sum + ((p['registeredCount'] as num?)?.toInt() ?? 0));
-      final userCount =
-          (await _db.collection('users').count().get()).count;
+        0,
+        (sum, p) => sum + ((p['registeredCount'] as num?)?.toInt() ?? 0),
+      );
+      final userCount = (await _db.collection('users').count().get()).count;
       final feedbackSnap = await _db
           .collection('feedback')
           .orderBy('createdAt', descending: true)
           .limit(5)
           .get();
- 
+
       return {
         'totalPrograms': programs.length,
         'activePrograms': activeCount,
@@ -58,13 +55,13 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
       };
     });
   }
- 
+
   // ─── Announcement methods ───────────────────────────────────────────────
- 
+
   void _showAddAnnouncementDialog() {
     final titleController = TextEditingController();
     final subtitleController = TextEditingController();
- 
+
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -100,8 +97,9 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
             onPressed: () async {
               if (titleController.text.trim().isEmpty ||
                   subtitleController.text.trim().isEmpty) {
-                ScaffoldMessenger.of(ctx).showSnackBar(const SnackBar(
-                    content: Text('Both fields are required')));
+                ScaffoldMessenger.of(ctx).showSnackBar(
+                  const SnackBar(content: Text('Both fields are required')),
+                );
                 return;
               }
               await _db.collection('announcements').add({
@@ -117,13 +115,13 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
       ),
     );
   }
- 
+
   void _showEditAnnouncementDialog(String docId, Map<String, dynamic> data) {
-    final titleController =
-        TextEditingController(text: data['title'] ?? '');
-    final subtitleController =
-        TextEditingController(text: data['subtitle'] ?? '');
- 
+    final titleController = TextEditingController(text: data['title'] ?? '');
+    final subtitleController = TextEditingController(
+      text: data['subtitle'] ?? '',
+    );
+
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -169,14 +167,15 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
       ),
     );
   }
- 
+
   void _deleteAnnouncement(String docId) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Delete Announcement'),
-        content:
-            const Text('Are you sure you want to delete this announcement?'),
+        content: const Text(
+          'Are you sure you want to delete this announcement?',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
@@ -188,22 +187,21 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
               if (ctx.mounted) Navigator.pop(ctx);
             },
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text('Delete',
-                style: TextStyle(color: Colors.white)),
+            child: const Text('Delete', style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
     );
   }
- 
+
   // ─── Internship methods ─────────────────────────────────────────────────
- 
+
   void _showEditInternshipDialog(String docId, Map<String, dynamic> data) {
-    final titleController =
-        TextEditingController(text: data['title'] ?? '');
-    final descController =
-        TextEditingController(text: data['description'] ?? '');
- 
+    final titleController = TextEditingController(text: data['title'] ?? '');
+    final descController = TextEditingController(
+      text: data['description'] ?? '',
+    );
+
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -249,14 +247,13 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
       ),
     );
   }
- 
+
   // ─── Drawer ─────────────────────────────────────────────────────────────
- 
+
   Widget _buildDrawer(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
-    final name =
-        user?.displayName ?? user?.email?.split('@').first ?? 'Admin';
- 
+    final name = user?.displayName ?? user?.email?.split('@').first ?? 'Admin';
+
     return Drawer(
       child: SafeArea(
         child: Column(
@@ -276,35 +273,43 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
                 children: [
                   CircleAvatar(
                     radius: 32,
-                    backgroundColor: Colors.white.withOpacity(0.2),
+                    backgroundColor: Colors.white.withValues(alpha: 0.2),
                     child: Text(
                       name.isNotEmpty ? name[0].toUpperCase() : 'A',
                       style: const TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 12),
-                  Text(name,
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold)),
-                  Text(user?.email ?? '',
-                      style: const TextStyle(
-                          color: Colors.white70, fontSize: 13)),
+                  Text(
+                    name,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    user?.email ?? '',
+                    style: const TextStyle(color: Colors.white70, fontSize: 13),
+                  ),
                   const SizedBox(height: 8),
                   Container(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 8, vertical: 2),
+                      horizontal: 8,
+                      vertical: 2,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.orange,
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Text('Admin',
-                        style: TextStyle(
-                            color: Colors.white, fontSize: 12)),
+                    child: const Text(
+                      'Admin',
+                      style: TextStyle(color: Colors.white, fontSize: 12),
+                    ),
                   ),
                 ],
               ),
@@ -321,23 +326,23 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => const ProgramListScreen()));
+                  context,
+                  MaterialPageRoute(builder: (_) => const ProgramListScreen()),
+                );
               },
             ),
             const Divider(),
             ValueListenableBuilder<ThemeMode>(
               valueListenable: themeNotifier,
               builder: (context, mode, _) => ListTile(
-                leading: Icon(mode == ThemeMode.dark
-                    ? Icons.dark_mode
-                    : Icons.light_mode),
+                leading: Icon(
+                  mode == ThemeMode.dark ? Icons.dark_mode : Icons.light_mode,
+                ),
                 title: const Text('Dark Mode'),
                 trailing: Switch(
                   value: mode == ThemeMode.dark,
                   onChanged: (_) => themeNotifier.toggle(),
-                  activeColor: Colors.blue,
+                  activeThumbColor: Colors.blue,
                 ),
               ),
             ),
@@ -345,15 +350,13 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
             const Divider(),
             ListTile(
               leading: const Icon(Icons.logout, color: Colors.red),
-              title: const Text('Logout',
-                  style: TextStyle(color: Colors.red)),
+              title: const Text('Logout', style: TextStyle(color: Colors.red)),
               onTap: () async {
                 await FirebaseAuth.instance.signOut();
                 if (context.mounted) {
                   Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(
-                        builder: (_) => const LandingScreen()),
+                    MaterialPageRoute(builder: (_) => const LandingScreen()),
                     (route) => false,
                   );
                 }
@@ -365,15 +368,14 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
       ),
     );
   }
- 
+
   // ─── Tabs ────────────────────────────────────────────────────────────────
- 
+
   Widget _buildOverviewTab() {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final user = FirebaseAuth.instance.currentUser;
-    final name =
-        user?.displayName ?? user?.email?.split('@').first ?? 'Admin';
- 
+    final name = user?.displayName ?? user?.email?.split('@').first ?? 'Admin';
+
     return StreamBuilder<Map<String, dynamic>>(
       stream: _statsStream(),
       builder: (context, snapshot) {
@@ -382,8 +384,9 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
         }
         final stats = snapshot.data ?? {};
         final feedback = List<Map<String, dynamic>>.from(
-            stats['recentFeedback'] ?? []);
- 
+          stats['recentFeedback'] ?? [],
+        );
+
         return RefreshIndicator(
           onRefresh: () async => setState(() {}),
           child: SingleChildScrollView(
@@ -392,15 +395,20 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Welcome back, $name',
-                    style: const TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.bold)),
+                Text(
+                  'Welcome back, $name',
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 const SizedBox(height: 4),
-                Text("Here's what's happening today",
-                    style: TextStyle(
-                        color: Colors.grey.shade500, fontSize: 14)),
+                Text(
+                  "Here's what's happening today",
+                  style: TextStyle(color: Colors.grey.shade500, fontSize: 14),
+                ),
                 const SizedBox(height: 20),
- 
+
                 GridView.count(
                   crossAxisCount: 2,
                   shrinkWrap: true,
@@ -409,41 +417,51 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
                   mainAxisSpacing: 12,
                   childAspectRatio: 1.5,
                   children: [
-                    _buildStatCard(context,
-                        icon: Icons.school,
-                        label: 'Total Programs',
-                        value: '${stats['totalPrograms'] ?? 0}',
-                        color: Colors.blue,
-                        isDark: isDark),
-                    _buildStatCard(context,
-                        icon: Icons.play_circle,
-                        label: 'Active Programs',
-                        value: '${stats['activePrograms'] ?? 0}',
-                        color: Colors.green,
-                        isDark: isDark),
-                    _buildStatCard(context,
-                        icon: Icons.people,
-                        label: 'Total Users',
-                        value: '${stats['userCount'] ?? 0}',
-                        color: Colors.purple,
-                        isDark: isDark),
-                    _buildStatCard(context,
-                        icon: Icons.how_to_reg,
-                        label: 'Total Enrolled',
-                        value: '${stats['totalEnrolled'] ?? 0}',
-                        color: Colors.orange,
-                        isDark: isDark),
+                    _buildStatCard(
+                      context,
+                      icon: Icons.school,
+                      label: 'Total Programs',
+                      value: '${stats['totalPrograms'] ?? 0}',
+                      color: Colors.blue,
+                      isDark: isDark,
+                    ),
+                    _buildStatCard(
+                      context,
+                      icon: Icons.play_circle,
+                      label: 'Active Programs',
+                      value: '${stats['activePrograms'] ?? 0}',
+                      color: Colors.green,
+                      isDark: isDark,
+                    ),
+                    _buildStatCard(
+                      context,
+                      icon: Icons.people,
+                      label: 'Total Users',
+                      value: '${stats['userCount'] ?? 0}',
+                      color: Colors.purple,
+                      isDark: isDark,
+                    ),
+                    _buildStatCard(
+                      context,
+                      icon: Icons.how_to_reg,
+                      label: 'Total Enrolled',
+                      value: '${stats['totalEnrolled'] ?? 0}',
+                      color: Colors.orange,
+                      isDark: isDark,
+                    ),
                   ],
                 ),
                 const SizedBox(height: 24),
- 
+
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton.icon(
                     onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => const ProgramListScreen())),
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const ProgramListScreen(),
+                      ),
+                    ),
                     icon: const Icon(Icons.school),
                     label: const Text('Manage Programs'),
                     style: ElevatedButton.styleFrom(
@@ -452,22 +470,21 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
                   ),
                 ),
                 const SizedBox(height: 24),
- 
-                const Text('Recent Feedback',
-                    style: TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.bold)),
+
+                const Text(
+                  'Recent Feedback',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
                 const SizedBox(height: 12),
- 
+
                 if (feedback.isEmpty)
-                  _buildEmptyState(
-                      Icons.feedback_outlined, 'No feedback yet')
+                  _buildEmptyState(Icons.feedback_outlined, 'No feedback yet')
                 else
                   ListView.separated(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: feedback.length,
-                    separatorBuilder: (_, __) =>
-                        const SizedBox(height: 8),
+                    separatorBuilder: (_, _) => const SizedBox(height: 8),
                     itemBuilder: (context, index) {
                       final item = feedback[index];
                       return _buildFeedbackCard(context, item);
@@ -481,7 +498,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
       },
     );
   }
- 
+
   Widget _buildAnnouncementsTab() {
     return StreamBuilder<QuerySnapshot>(
       stream: _db
@@ -493,7 +510,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
           return const Center(child: CircularProgressIndicator());
         }
         final docs = snapshot.data?.docs ?? [];
- 
+
         return Column(
           children: [
             Padding(
@@ -513,12 +530,13 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
             Expanded(
               child: docs.isEmpty
                   ? _buildEmptyState(
-                      Icons.campaign_outlined, 'No announcements yet')
+                      Icons.campaign_outlined,
+                      'No announcements yet',
+                    )
                   : ListView.separated(
                       padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                       itemCount: docs.length,
-                      separatorBuilder: (_, __) =>
-                          const SizedBox(height: 10),
+                      separatorBuilder: (_, _) => const SizedBox(height: 10),
                       itemBuilder: (context, index) {
                         final doc = docs[index];
                         final data = doc.data() as Map<String, dynamic>;
@@ -527,31 +545,38 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
                             leading: Container(
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
-                                color: Colors.orange.withOpacity(0.12),
+                                color: Colors.orange.withValues(alpha: 0.12),
                                 borderRadius: BorderRadius.circular(8),
                               ),
-                              child: const Icon(Icons.campaign,
-                                  color: Colors.orange),
+                              child: const Icon(
+                                Icons.campaign,
+                                color: Colors.orange,
+                              ),
                             ),
-                            title: Text(data['title'] ?? '',
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.w600)),
+                            title: Text(
+                              data['title'] ?? '',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
                             subtitle: Text(data['subtitle'] ?? ''),
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 IconButton(
-                                  icon: const Icon(Icons.edit_outlined,
-                                      color: Colors.blue),
+                                  icon: const Icon(
+                                    Icons.edit_outlined,
+                                    color: Colors.blue,
+                                  ),
                                   onPressed: () =>
-                                      _showEditAnnouncementDialog(
-                                          doc.id, data),
+                                      _showEditAnnouncementDialog(doc.id, data),
                                 ),
                                 IconButton(
-                                  icon: const Icon(Icons.delete_outline,
-                                      color: Colors.red),
-                                  onPressed: () =>
-                                      _deleteAnnouncement(doc.id),
+                                  icon: const Icon(
+                                    Icons.delete_outline,
+                                    color: Colors.red,
+                                  ),
+                                  onPressed: () => _deleteAnnouncement(doc.id),
                                 ),
                               ],
                             ),
@@ -565,7 +590,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
       },
     );
   }
- 
+
   Widget _buildInternshipTab() {
     return StreamBuilder<QuerySnapshot>(
       stream: _db.collection('internships').snapshots(),
@@ -574,18 +599,18 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
           return const Center(child: CircularProgressIndicator());
         }
         final docs = snapshot.data?.docs ?? [];
- 
+
         return docs.isEmpty
             ? _buildEmptyState(Icons.work_outline, 'No internships found')
             : ListView.separated(
                 padding: const EdgeInsets.all(16),
                 itemCount: docs.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 10),
+                separatorBuilder: (_, _) => const SizedBox(height: 10),
                 itemBuilder: (context, index) {
                   final doc = docs[index];
                   final data = doc.data() as Map<String, dynamic>;
                   final isActive = data['status'] == 'ACTIVE';
- 
+
                   return Card(
                     child: Padding(
                       padding: const EdgeInsets.all(16),
@@ -597,19 +622,22 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
                               Container(
                                 padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
-                                  color: Colors.blue.withOpacity(0.12),
+                                  color: Colors.blue.withValues(alpha: 0.12),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
-                                child: const Icon(Icons.work,
-                                    color: Colors.blue),
+                                child: const Icon(
+                                  Icons.work,
+                                  color: Colors.blue,
+                                ),
                               ),
                               const SizedBox(width: 12),
                               Expanded(
                                 child: Text(
                                   data['title'] ?? '',
                                   style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                               Chip(
@@ -624,24 +652,26 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
                                   ),
                                 ),
                                 backgroundColor: isActive
-                                    ? Colors.green.withOpacity(0.15)
-                                    : Colors.grey.withOpacity(0.15),
+                                    ? Colors.green.withValues(alpha: 0.15)
+                                    : Colors.grey.withValues(alpha: 0.15),
                               ),
                             ],
                           ),
                           const SizedBox(height: 12),
-                          Text(data['description'] ?? '',
-                              style: TextStyle(
-                                  color: Colors.grey.shade600,
-                                  fontSize: 14)),
+                          Text(
+                            data['description'] ?? '',
+                            style: TextStyle(
+                              color: Colors.grey.shade600,
+                              fontSize: 14,
+                            ),
+                          ),
                           const SizedBox(height: 12),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               OutlinedButton.icon(
                                 onPressed: () =>
-                                    _showEditInternshipDialog(
-                                        doc.id, data),
+                                    _showEditInternshipDialog(doc.id, data),
                                 icon: const Icon(Icons.edit, size: 16),
                                 label: const Text('Edit'),
                               ),
@@ -652,10 +682,10 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
                                       .collection('internships')
                                       .doc(doc.id)
                                       .update({
-                                    'status': isActive
-                                        ? 'INACTIVE'
-                                        : 'ACTIVE',
-                                  });
+                                        'status': isActive
+                                            ? 'INACTIVE'
+                                            : 'ACTIVE',
+                                      });
                                 },
                                 icon: Icon(
                                   isActive
@@ -664,7 +694,8 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
                                   size: 16,
                                 ),
                                 label: Text(
-                                    isActive ? 'Deactivate' : 'Activate'),
+                                  isActive ? 'Deactivate' : 'Activate',
+                                ),
                                 style: OutlinedButton.styleFrom(
                                   foregroundColor: isActive
                                       ? Colors.orange
@@ -687,9 +718,9 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
       },
     );
   }
- 
+
   // ─── Helpers ─────────────────────────────────────────────────────────────
- 
+
   Widget _buildEmptyState(IconData icon, String message) {
     return Center(
       child: Column(
@@ -697,16 +728,16 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
         children: [
           Icon(icon, size: 56, color: Colors.grey.shade400),
           const SizedBox(height: 12),
-          Text(message,
-              style:
-                  TextStyle(color: Colors.grey.shade500, fontSize: 16)),
+          Text(
+            message,
+            style: TextStyle(color: Colors.grey.shade500, fontSize: 16),
+          ),
         ],
       ),
     );
   }
- 
-  Widget _buildFeedbackCard(
-      BuildContext context, Map<String, dynamic> item) {
+
+  Widget _buildFeedbackCard(BuildContext context, Map<String, dynamic> item) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -714,10 +745,10 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 6,
             offset: const Offset(0, 2),
-          )
+          ),
         ],
       ),
       child: Row(
@@ -725,11 +756,13 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
         children: [
           CircleAvatar(
             radius: 18,
-            backgroundColor: Colors.blue.withOpacity(0.15),
+            backgroundColor: Colors.blue.withValues(alpha: 0.15),
             child: Text(
               (item['userName'] ?? 'A').toString()[0].toUpperCase(),
               style: const TextStyle(
-                  color: Colors.blue, fontWeight: FontWeight.bold),
+                color: Colors.blue,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
           const SizedBox(width: 12),
@@ -740,16 +773,19 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
                 Text(
                   item['userName'] ?? 'Anonymous',
                   style: const TextStyle(
-                      fontWeight: FontWeight.w600, fontSize: 14),
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14,
+                  ),
                 ),
                 Text(
                   item['userEmail'] ?? '',
-                  style: TextStyle(
-                      fontSize: 11, color: Colors.grey.shade500),
+                  style: TextStyle(fontSize: 11, color: Colors.grey.shade500),
                 ),
                 const SizedBox(height: 6),
-                Text(item['feedback'] ?? '',
-                    style: const TextStyle(fontSize: 14)),
+                Text(
+                  item['feedback'] ?? '',
+                  style: const TextStyle(fontSize: 14),
+                ),
               ],
             ),
           ),
@@ -757,19 +793,21 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
       ),
     );
   }
- 
-  Widget _buildStatCard(BuildContext context,
-      {required IconData icon,
-      required String label,
-      required String value,
-      required Color color,
-      required bool isDark}) {
+
+  Widget _buildStatCard(
+    BuildContext context, {
+    required IconData icon,
+    required String label,
+    required String value,
+    required Color color,
+    required bool isDark,
+  }) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: color.withOpacity(isDark ? 0.15 : 0.08),
+        color: color.withValues(alpha: isDark ? 0.15 : 0.08),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: color.withOpacity(0.25)),
+        border: Border.all(color: color.withValues(alpha: 0.25)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -779,29 +817,32 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(value,
-                  style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: color)),
-              Text(label,
-                  style: TextStyle(
-                      fontSize: 12,
-                      color: Theme.of(context)
-                          .textTheme
-                          .bodySmall
-                          ?.color)),
+              Text(
+                value,
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: color,
+                ),
+              ),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Theme.of(context).textTheme.bodySmall?.color,
+                ),
+              ),
             ],
           ),
         ],
       ),
     );
   }
- 
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
- 
+
     return Scaffold(
       drawer: _buildDrawer(context),
       appBar: AppBar(
@@ -811,11 +852,14 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
             onPressed: () => Scaffold.of(context).openDrawer(),
           ),
         ),
-        title: Text('Admin Panel',
-            style: TextStyle(
-                color: theme.textTheme.titleLarge?.color,
-                fontSize: 20,
-                fontWeight: FontWeight.w600)),
+        title: Text(
+          'Admin Panel',
+          style: TextStyle(
+            color: theme.textTheme.titleLarge?.color,
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
         bottom: TabBar(
           controller: _tabController,
           tabs: const [
@@ -838,4 +882,3 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
     );
   }
 }
-

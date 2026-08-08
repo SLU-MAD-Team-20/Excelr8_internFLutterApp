@@ -49,7 +49,8 @@ class _SignupScreenState extends State<SignupScreen> {
           backgroundColor: Colors.green,
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10)),
+            borderRadius: BorderRadius.circular(10),
+          ),
         ),
       );
       _usernameController.clear();
@@ -67,7 +68,8 @@ class _SignupScreenState extends State<SignupScreen> {
           backgroundColor: Colors.red.shade400,
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10)),
+            borderRadius: BorderRadius.circular(10),
+          ),
         ),
       );
     }
@@ -103,11 +105,14 @@ class _SignupScreenState extends State<SignupScreen> {
                     child: Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.15),
+                        color: Colors.white.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: const Icon(Icons.arrow_back,
-                          color: Colors.white, size: 20),
+                      child: const Icon(
+                        Icons.arrow_back,
+                        color: Colors.white,
+                        size: 20,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -124,7 +129,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     'Join Excelerate and start learning today',
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.white.withOpacity(0.8),
+                      color: Colors.white.withValues(alpha: 0.8),
                     ),
                   ),
                 ],
@@ -181,8 +186,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       label: 'Repeat your password',
                       icon: Icons.lock_outline,
                       obscureText: true,
-                      validator: (value) =>
-                          Validators.validateConfirmPassword(
+                      validator: (value) => Validators.validateConfirmPassword(
                         _passwordController.text,
                         value ?? '',
                       ),
@@ -206,13 +210,17 @@ class _SignupScreenState extends State<SignupScreen> {
                                 height: 22,
                                 width: 22,
                                 child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    color: Colors.white),
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
                               )
-                            : const Text('Create Account',
+                            : const Text(
+                                'Create Account',
                                 style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600)),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
                       ),
                     ),
                     const SizedBox(height: 24),
@@ -220,21 +228,28 @@ class _SignupScreenState extends State<SignupScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text('Already have an account?',
-                            style: TextStyle(
-                                color: Colors.grey.shade600,
-                                fontSize: 14)),
+                        Text(
+                          'Already have an account?',
+                          style: TextStyle(
+                            color: Colors.grey.shade600,
+                            fontSize: 14,
+                          ),
+                        ),
                         TextButton(
                           onPressed: () => Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (_) => const LoginScreen()),
+                              builder: (_) => const LoginScreen(),
+                            ),
                           ),
-                          child: const Text('Sign In',
-                              style: TextStyle(
-                                  color: Color(0xFF1565C0),
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 14)),
+                          child: const Text(
+                            'Sign In',
+                            style: TextStyle(
+                              color: Color(0xFF1565C0),
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14,
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -250,8 +265,9 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   Widget _buildLabel(String text) {
-    return Text(text,
-        style: const TextStyle(
-            fontSize: 14, fontWeight: FontWeight.w600));
+    return Text(
+      text,
+      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+    );
   }
 }

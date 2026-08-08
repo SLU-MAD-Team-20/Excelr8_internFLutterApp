@@ -40,8 +40,7 @@ class _ProgramListScreenState extends State<ProgramListScreen> {
         filtered.sort((a, b) => a.title.compareTo(b.title));
         break;
       case 'most_enrolled':
-        filtered.sort(
-            (a, b) => b.registeredCount.compareTo(a.registeredCount));
+        filtered.sort((a, b) => b.registeredCount.compareTo(a.registeredCount));
         break;
     }
     return filtered;
@@ -83,8 +82,10 @@ class _ProgramListScreenState extends State<ProgramListScreen> {
                 const SizedBox(height: 12),
                 Row(
                   children: [
-                    const Text('Duration (weeks):',
-                        style: TextStyle(fontSize: 14)),
+                    const Text(
+                      'Duration (weeks):',
+                      style: TextStyle(fontSize: 14),
+                    ),
                     const Spacer(),
                     IconButton(
                       icon: const Icon(Icons.remove_circle_outline),
@@ -92,13 +93,16 @@ class _ProgramListScreenState extends State<ProgramListScreen> {
                         if (durationWeeks > 1) durationWeeks--;
                       }),
                     ),
-                    Text('$durationWeeks',
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold)),
+                    Text(
+                      '$durationWeeks',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     IconButton(
                       icon: const Icon(Icons.add_circle_outline),
-                      onPressed: () =>
-                          setDialogState(() => durationWeeks++),
+                      onPressed: () => setDialogState(() => durationWeeks++),
                     ),
                   ],
                 ),
@@ -112,16 +116,14 @@ class _ProgramListScreenState extends State<ProgramListScreen> {
                 ),
                 const SizedBox(height: 12),
                 DropdownButtonFormField<String>(
-                  value: selectedStatus,
+                  initialValue: selectedStatus,
                   decoration: const InputDecoration(
                     labelText: 'Status',
                     border: OutlineInputBorder(),
                   ),
                   items: const [
-                    DropdownMenuItem(
-                        value: 'ACTIVE', child: Text('ACTIVE')),
-                    DropdownMenuItem(
-                        value: 'DRAFT', child: Text('DRAFT')),
+                    DropdownMenuItem(value: 'ACTIVE', child: Text('ACTIVE')),
+                    DropdownMenuItem(value: 'DRAFT', child: Text('DRAFT')),
                   ],
                   onChanged: (val) =>
                       setDialogState(() => selectedStatus = val!),
@@ -140,8 +142,8 @@ class _ProgramListScreenState extends State<ProgramListScreen> {
                     descriptionController.text.trim().isEmpty) {
                   ScaffoldMessenger.of(ctx).showSnackBar(
                     const SnackBar(
-                        content:
-                            Text('Title and description are required')),
+                      content: Text('Title and description are required'),
+                    ),
                   );
                   return;
                 }
@@ -195,8 +197,7 @@ class _ProgramListScreenState extends State<ProgramListScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Delete Program'),
-        content:
-            Text('Are you sure you want to delete "${program.title}"?'),
+        content: Text('Are you sure you want to delete "${program.title}"?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
@@ -207,10 +208,8 @@ class _ProgramListScreenState extends State<ProgramListScreen> {
               await FirestoreService.deleteProgram(program.id);
               if (ctx.mounted) Navigator.pop(ctx);
             },
-            style:
-                ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text('Delete',
-                style: TextStyle(color: Colors.white)),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            child: const Text('Delete', style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -225,13 +224,15 @@ class _ProgramListScreenState extends State<ProgramListScreen> {
 
     if (!isEnrolled) {
       // Check enrollment limit
-      final enrolledCount =
-          allPrograms.where((p) => p.enrolledUsers.contains(uid)).length;
+      final enrolledCount = allPrograms
+          .where((p) => p.enrolledUsers.contains(uid))
+          .length;
       if (enrolledCount >= _maxEnrollments) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-                'You can only enroll in $_maxEnrollments programs at a time.'),
+              'You can only enroll in $_maxEnrollments programs at a time.',
+            ),
             backgroundColor: Colors.orange,
           ),
         );
@@ -241,9 +242,7 @@ class _ProgramListScreenState extends State<ProgramListScreen> {
 
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => ProgramDetailsScreen(program: program),
-      ),
+      MaterialPageRoute(builder: (_) => ProgramDetailsScreen(program: program)),
     );
   }
 
@@ -252,10 +251,7 @@ class _ProgramListScreenState extends State<ProgramListScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Programs'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('Programs'), centerTitle: true),
       body: StreamBuilder<List<Program>>(
         stream: FirestoreService.programsStream(),
         builder: (context, snapshot) {
@@ -264,22 +260,25 @@ class _ProgramListScreenState extends State<ProgramListScreen> {
           }
           if (snapshot.hasError) {
             return Center(
-                child: Text('Error: ${snapshot.error}',
-                    style: const TextStyle(color: Colors.red)));
+              child: Text(
+                'Error: ${snapshot.error}',
+                style: const TextStyle(color: Colors.red),
+              ),
+            );
           }
 
           final allPrograms = snapshot.data ?? [];
           final programs = _filterAndSort(allPrograms);
-          final activeCount =
-              allPrograms.where((p) => p.status == 'ACTIVE').length;
-          final draftCount =
-              allPrograms.where((p) => p.status == 'DRAFT').length;
+          final activeCount = allPrograms
+              .where((p) => p.status == 'ACTIVE')
+              .length;
+          final draftCount = allPrograms
+              .where((p) => p.status == 'DRAFT')
+              .length;
           final uid = FirebaseAuth.instance.currentUser?.uid;
           final myEnrollmentCount = uid == null
               ? 0
-              : allPrograms
-                  .where((p) => p.enrolledUsers.contains(uid))
-                  .length;
+              : allPrograms.where((p) => p.enrolledUsers.contains(uid)).length;
 
           return SingleChildScrollView(
             padding: const EdgeInsets.all(16),
@@ -290,12 +289,27 @@ class _ProgramListScreenState extends State<ProgramListScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    _buildMetricCard(context, 'Total',
-                        '${allPrograms.length}', Colors.blue, isDark),
-                    _buildMetricCard(context, 'Active', '$activeCount',
-                        Colors.green, isDark),
-                    _buildMetricCard(context, 'Draft', '$draftCount',
-                        Colors.orange, isDark),
+                    _buildMetricCard(
+                      context,
+                      'Total',
+                      '${allPrograms.length}',
+                      Colors.blue,
+                      isDark,
+                    ),
+                    _buildMetricCard(
+                      context,
+                      'Active',
+                      '$activeCount',
+                      Colors.green,
+                      isDark,
+                    ),
+                    _buildMetricCard(
+                      context,
+                      'Draft',
+                      '$draftCount',
+                      Colors.orange,
+                      isDark,
+                    ),
                   ],
                 ),
 
@@ -304,16 +318,18 @@ class _ProgramListScreenState extends State<ProgramListScreen> {
                   const SizedBox(height: 12),
                   Container(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 14, vertical: 10),
+                      horizontal: 14,
+                      vertical: 10,
+                    ),
                     decoration: BoxDecoration(
                       color: myEnrollmentCount >= _maxEnrollments
-                          ? Colors.orange.withOpacity(0.12)
-                          : Colors.blue.withOpacity(0.08),
+                          ? Colors.orange.withValues(alpha: 0.12)
+                          : Colors.blue.withValues(alpha: 0.08),
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
                         color: myEnrollmentCount >= _maxEnrollments
-                            ? Colors.orange.withOpacity(0.4)
-                            : Colors.blue.withOpacity(0.2),
+                            ? Colors.orange.withValues(alpha: 0.4)
+                            : Colors.blue.withValues(alpha: 0.2),
                       ),
                     ),
                     child: Row(
@@ -348,8 +364,7 @@ class _ProgramListScreenState extends State<ProgramListScreen> {
                 // Search bar
                 TextField(
                   controller: _searchController,
-                  onChanged: (val) =>
-                      setState(() => _searchQuery = val),
+                  onChanged: (val) => setState(() => _searchQuery = val),
                   decoration: InputDecoration(
                     hintText: 'Search programs...',
                     prefixIcon: const Icon(Icons.search),
@@ -366,7 +381,9 @@ class _ProgramListScreenState extends State<ProgramListScreen> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 12),
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -376,26 +393,32 @@ class _ProgramListScreenState extends State<ProgramListScreen> {
                   children: [
                     Expanded(
                       child: DropdownButtonFormField<String>(
-                        value: _sortBy,
+                        initialValue: _sortBy,
                         decoration: InputDecoration(
                           contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 8),
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
                           border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10)),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                           prefixIcon: const Icon(Icons.sort, size: 18),
                         ),
                         items: const [
                           DropdownMenuItem(
-                              value: 'newest', child: Text('Newest')),
+                            value: 'newest',
+                            child: Text('Newest'),
+                          ),
                           DropdownMenuItem(
-                              value: 'alphabetical',
-                              child: Text('A-Z')),
+                            value: 'alphabetical',
+                            child: Text('A-Z'),
+                          ),
                           DropdownMenuItem(
-                              value: 'most_enrolled',
-                              child: Text('Most Enrolled')),
+                            value: 'most_enrolled',
+                            child: Text('Most Enrolled'),
+                          ),
                         ],
-                        onChanged: (val) =>
-                            setState(() => _sortBy = val!),
+                        onChanged: (val) => setState(() => _sortBy = val!),
                       ),
                     ),
                     if (_isAdmin) ...[
@@ -406,7 +429,9 @@ class _ProgramListScreenState extends State<ProgramListScreen> {
                         label: const Text('Add'),
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 13),
+                            horizontal: 16,
+                            vertical: 13,
+                          ),
                         ),
                       ),
                     ],
@@ -420,16 +445,20 @@ class _ProgramListScreenState extends State<ProgramListScreen> {
                       padding: const EdgeInsets.all(32),
                       child: Column(
                         children: [
-                          Icon(Icons.search_off,
-                              size: 56, color: Colors.grey.shade400),
+                          Icon(
+                            Icons.search_off,
+                            size: 56,
+                            color: Colors.grey.shade400,
+                          ),
                           const SizedBox(height: 12),
                           Text(
                             _searchQuery.isNotEmpty
                                 ? 'No programs match "$_searchQuery"'
                                 : 'No programs yet',
                             style: TextStyle(
-                                color: Colors.grey.shade500,
-                                fontSize: 16),
+                              color: Colors.grey.shade500,
+                              fontSize: 16,
+                            ),
                           ),
                         ],
                       ),
@@ -443,8 +472,8 @@ class _ProgramListScreenState extends State<ProgramListScreen> {
                     itemBuilder: (context, index) {
                       final program = programs[index];
                       final isActive = program.status == 'ACTIVE';
-                      final isEnrolled = uid != null &&
-                          program.enrolledUsers.contains(uid);
+                      final isEnrolled =
+                          uid != null && program.enrolledUsers.contains(uid);
 
                       return Card(
                         margin: const EdgeInsets.only(bottom: 16),
@@ -455,23 +484,27 @@ class _ProgramListScreenState extends State<ProgramListScreen> {
                             children: [
                               ListTile(
                                 contentPadding: EdgeInsets.zero,
-                                title: Text(program.title,
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold)),
+                                title: Text(
+                                  program.title,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                                 subtitle: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                        '${program.registeredCount} registered • ${program.durationWeeks} weeks'),
+                                      '${program.registeredCount} registered • ${program.durationWeeks} weeks',
+                                    ),
                                     if (program.description.isNotEmpty)
                                       Text(
                                         program.description,
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
-                                            fontSize: 12,
-                                            color: Colors.grey.shade500),
+                                          fontSize: 12,
+                                          color: Colors.grey.shade500,
+                                        ),
                                       ),
                                   ],
                                 ),
@@ -490,8 +523,8 @@ class _ProgramListScreenState extends State<ProgramListScreen> {
                                         ),
                                       ),
                                       backgroundColor: isActive
-                                          ? Colors.green.withOpacity(0.15)
-                                          : Colors.grey.withOpacity(0.15),
+                                          ? Colors.green.withValues(alpha: 0.15)
+                                          : Colors.grey.withValues(alpha: 0.15),
                                       side: BorderSide(
                                         color: isActive
                                             ? Colors.green.shade400
@@ -502,8 +535,9 @@ class _ProgramListScreenState extends State<ProgramListScreen> {
                                       const SizedBox(width: 4),
                                       IconButton(
                                         icon: const Icon(
-                                            Icons.delete_outline,
-                                            color: Colors.red),
+                                          Icons.delete_outline,
+                                          color: Colors.red,
+                                        ),
                                         onPressed: () =>
                                             _confirmDelete(program),
                                       ),
@@ -516,8 +550,9 @@ class _ProgramListScreenState extends State<ProgramListScreen> {
                                 child: LinearProgressIndicator(
                                   value: program.progress,
                                   minHeight: 6,
-                                  backgroundColor:
-                                      Colors.blue.withOpacity(0.15),
+                                  backgroundColor: Colors.blue.withValues(
+                                    alpha: 0.15,
+                                  ),
                                 ),
                               ),
                               const SizedBox(height: 12),
@@ -528,26 +563,32 @@ class _ProgramListScreenState extends State<ProgramListScreen> {
                                   if (isEnrolled && !_isAdmin)
                                     Container(
                                       padding: const EdgeInsets.symmetric(
-                                          horizontal: 8, vertical: 4),
+                                        horizontal: 8,
+                                        vertical: 4,
+                                      ),
                                       decoration: BoxDecoration(
-                                        color: Colors.green
-                                            .withOpacity(0.12),
-                                        borderRadius:
-                                            BorderRadius.circular(8),
+                                        color: Colors.green.withValues(
+                                          alpha: 0.12,
+                                        ),
+                                        borderRadius: BorderRadius.circular(8),
                                       ),
                                       child: const Row(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
-                                          Icon(Icons.check_circle,
-                                              size: 14,
-                                              color: Colors.green),
+                                          Icon(
+                                            Icons.check_circle,
+                                            size: 14,
+                                            color: Colors.green,
+                                          ),
                                           SizedBox(width: 4),
-                                          Text('Enrolled',
-                                              style: TextStyle(
-                                                  fontSize: 12,
-                                                  color: Colors.green,
-                                                  fontWeight:
-                                                      FontWeight.w600)),
+                                          Text(
+                                            'Enrolled',
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.green,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
                                         ],
                                       ),
                                     )
@@ -560,11 +601,11 @@ class _ProgramListScreenState extends State<ProgramListScreen> {
                                             MaterialPageRoute(
                                               builder: (_) =>
                                                   ProgramDetailsScreen(
-                                                      program: program),
+                                                    program: program,
+                                                  ),
                                             ),
                                           )
-                                        : _handleEnroll(
-                                            program, allPrograms),
+                                        : _handleEnroll(program, allPrograms),
                                     child: const Text('View Details'),
                                   ),
                                 ],
@@ -583,27 +624,38 @@ class _ProgramListScreenState extends State<ProgramListScreen> {
     );
   }
 
-  Widget _buildMetricCard(BuildContext context, String title, String value,
-      Color color, bool isDark) {
+  Widget _buildMetricCard(
+    BuildContext context,
+    String title,
+    String value,
+    Color color,
+    bool isDark,
+  ) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
       decoration: BoxDecoration(
-        color: color.withOpacity(isDark ? 0.15 : 0.1),
+        color: color.withValues(alpha: isDark ? 0.15 : 0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Column(
         children: [
-          Text(value,
-              style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: color)),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
+          ),
           const SizedBox(height: 2),
-          Text(title,
-              style: TextStyle(
-                  fontSize: 12,
-                  color: Theme.of(context).textTheme.bodySmall?.color)),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 12,
+              color: Theme.of(context).textTheme.bodySmall?.color,
+            ),
+          ),
         ],
       ),
     );
